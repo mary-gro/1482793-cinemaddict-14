@@ -7,7 +7,7 @@ const getRandomInteger = (a = 0, b = 1) => {
 const getRandomFloat = (a = 0, b = 1, digitsAfterComma = 1) => {
   const lower = Math.min(a, b);
   const upper = Math.max(a, b);
-  return +(lower + Math.random() * (upper - lower)).toFixed(digitsAfterComma);
+  return (lower + Math.random() * (upper - lower)).toFixed(digitsAfterComma);
 };
 
 const getRandomArrayElement = (elements) => {

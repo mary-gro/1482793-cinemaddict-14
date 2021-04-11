@@ -81,6 +81,10 @@ const EMOTIONS = [
 
 const COMMENTS_COUNT = 5;
 
+const COMMENTS_YEARS_GAP_START = -5;
+
+const FILMS_YEARS_GAP_START = -90;
+
 const getRuntime = (duration) => {
   const hours = Math.trunc(duration/60);
   const minutes = duration % 60;
@@ -102,7 +106,7 @@ const generateComment = () => {
     text: getRandomArrayElement(DESCRIPTIONS),
     author: getRandomArrayElement(PEOPLE),
     emoji: getRandomArrayElement(EMOTIONS),
-    date: dayjs(getDate(-5)).format('YYYY/DD/MM HH:mm'),
+    date: dayjs(getDate(COMMENTS_YEARS_GAP_START)).format('YYYY/DD/MM HH:mm'),
   };
 };
 
@@ -122,7 +126,7 @@ export const generateFilmCard = () => {
       writers: getRandomArray(PEOPLE).join(', '),
       actors: getRandomArray(PEOPLE).join(', '),
       release: {
-        date: getDate(-90),
+        date: getDate(FILMS_YEARS_GAP_START),
         releaseCountry: getRandomArrayElement(COUNTRIES),
       },
       runtime: getRuntime(getRandomInteger(FilmDuration.MIN, FilmDuration.MAX)),

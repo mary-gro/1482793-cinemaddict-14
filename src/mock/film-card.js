@@ -85,6 +85,8 @@ const COMMENTS_YEARS_GAP_START = -5;
 
 const FILMS_YEARS_GAP_START = -90;
 
+const WATCHING_DATE_YEARS_GAP_START = -5;
+
 const getRuntime = (duration) => {
   const hours = Math.trunc(duration/60);
   const minutes = duration % 60;
@@ -112,7 +114,7 @@ const generateComment = () => {
 
 export const generateFilmCard = () => {
   const IsAlreadyWatched = Boolean(getRandomInteger(0, 1));
-  const watchingDate = IsAlreadyWatched ? getDate(-5) : null;
+  const watchingDate = IsAlreadyWatched ? getDate(WATCHING_DATE_YEARS_GAP_START) : null;
 
   return {
     comments: new Array(getRandomInteger(0, COMMENTS_COUNT)).fill().map(() => generateComment()),

@@ -1,5 +1,5 @@
-export const createStaticticsTemplate = () => {
+export const createStaticticsTemplate = (count) => {
   return `<p>
-    130 291 movies inside
+    ${count} movies inside
   </p>`;
 };

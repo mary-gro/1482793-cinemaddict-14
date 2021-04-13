@@ -1,9 +1,30 @@
 import dayjs from 'dayjs';
-import {createCommentTemplate} from './comment.js';
+import {createElement} from '../utils.js';
 
 export const createFilmPopupTemplate = (filmCard) => {
   const {title, alternativeTitle, totalRating, poster, ageRating, director, writers, actors, release, runtime, genres, description} = filmCard.filmInfo;
   const {watchlist, alreadyWatched, favorite} = filmCard.userDetails;
+  const comments = filmCard.comments;
+
+  const renderComments = (comments) => {
+    return comments
+      .map((comment) => {
+        return `<li class="film-details__comment">
+          <span class="film-details__comment-emoji">
+            <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-smile">
+          </span>
+          <div>
+            <p class="film-details__comment-text">${comment.text}</p>
+            <p class="film-details__comment-info">
+              <span class="film-details__comment-author">${comment.author}</span>
+              <span class="film-details__comment-day">${comment.date}</span>
+              <button class="film-details__comment-delete">Delete</button>
+            </p>
+          </div>
+        </li>`;
+      })
+      .join('');
+  };
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -80,9 +101,9 @@ export const createFilmPopupTemplate = (filmCard) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${filmCard.comments.length}</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
           <ul class="film-details__comments-list">
-            ${filmCard.comments.map((comment) => {return createCommentTemplate(comment);}).join('')}
+            ${renderComments(comments)}
           </ul>
 
           <div class="film-details__new-comment">
@@ -119,3 +140,26 @@ export const createFilmPopupTemplate = (filmCard) => {
     </form>
   </section>`;
 };
+
+export default class FilmPopup {
+  constructor(filmCard) {
+    this._filmCard = filmCard;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmPopupTemplate(this._filmCard);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

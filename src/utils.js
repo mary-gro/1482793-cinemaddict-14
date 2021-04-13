@@ -18,4 +18,15 @@ const getRandomArray = (elements, maxLength = elements.length) => {
   return new Array(getRandomInteger(1, maxLength)).fill().map(() => elements[getRandomInteger(0, elements.length -  1)]);
 };
 
-export {getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArray};
+const render = (container, element) => {
+  container.append(element);
+};
+
+const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+export {getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArray, render, createElement};

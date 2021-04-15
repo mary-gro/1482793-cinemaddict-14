@@ -1,19 +1,20 @@
 import {createElement} from '../utils.js';
 
-const createUserRankTemplate = () => {
-  return `<section class="header__profile profile">
-    <p class="profile__rating">Movie Buff</p>
-    <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+const createFilmsListTopRatedTemplate = () => {
+  return `<section class="films-list films-list--extra films-list--top-rated">
+    <h2 class="films-list__title">Top rated</h2>
+    <div class="films-list__container">
+    </div>
   </section>`;
 };
 
-export default class UserRank {
+export default class FilmsListTopRated {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createUserRankTemplate();
+    return createFilmsListTopRatedTemplate();
   }
 
   getElement() {

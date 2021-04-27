@@ -4,7 +4,7 @@ import UserRankView from './view/user-rank.js';
 import FilmsListView from './view/films-list.js';
 import FilmsListEmptyView from './view/films-list.js';
 import FilmsListTopRatedView from './view/films-list-top-rated.js';
-import FilmsListMostCommenteddView from './view/films-list-most-commented.js';
+import FilmsListMostCommentedView from './view/films-list-most-commented.js';
 import FilmCardView from './view/film-card.js';
 import ShowMoreButtonView from './view/show-more-button.js';
 import StatisticsView from './view/statistics.js';
@@ -111,7 +111,7 @@ const renderFilms = (filmCards) => {
 
     renderFilmCards(topRatedContainerElement, filmCards, FILMS_COUNT_EXTRA);
 
-    render(filmsElement, new FilmsListMostCommenteddView());
+    render(filmsElement, new FilmsListMostCommentedView());
 
     const mostCommentedContainerElement = filmsElement.querySelector('.films-list--most-commented .films-list__container');
 

@@ -1,15 +1,18 @@
 import Abstract from '../view/abstract.js';
 
 export const render = (container, child) => {
-  if (container instanceof Abstract) {
-    container = container.getElement();
+  let containerElement = container;
+  let childElement = child;
+
+  if (containerElement instanceof Abstract) {
+    containerElement = containerElement.getElement();
   }
 
-  if (child instanceof Abstract) {
-    child = child.getElement();
+  if (childElement instanceof Abstract) {
+    childElement = childElement.getElement();
   }
 
-  container.append(child);
+  containerElement.append(childElement);
 };
 
 export const createElement = (template) => {

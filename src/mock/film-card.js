@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 import {getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArray} from '../utils/common.js';
 
 const TITLES = [
@@ -105,6 +106,7 @@ const getDate = (yearsGapStart) => {
 
 const generateComment = () => {
   return  {
+    id: nanoid(),
     text: getRandomArrayElement(DESCRIPTIONS),
     author: getRandomArrayElement(PEOPLE),
     emoji: getRandomArrayElement(EMOTIONS),
@@ -113,10 +115,8 @@ const generateComment = () => {
 };
 
 export const generateFilmCard = () => {
-  const IsAlreadyWatched = Boolean(getRandomInteger(0, 1));
-  const watchingDate = IsAlreadyWatched ? getDate(WATCHING_DATE_YEARS_GAP_START) : null;
-
   return {
+    id: nanoid(),
     comments: new Array(getRandomInteger(0, COMMENTS_COUNT)).fill().map(() => generateComment()),
     filmInfo: {
       title: getRandomArrayElement(TITLES),
@@ -137,8 +137,8 @@ export const generateFilmCard = () => {
     },
     userDetails: {
       watchlist: Boolean(getRandomInteger(0, 1)),
-      alreadyWatched: IsAlreadyWatched,
-      watchingDate: watchingDate,
+      alreadyWatched: Boolean(getRandomInteger(0, 1)),
+      watchingDate: getDate(WATCHING_DATE_YEARS_GAP_START),
       favorite: Boolean(getRandomInteger(0, 1)),
     },
   };

@@ -149,10 +149,9 @@ export default class FilmsList {
     if (this._films.length === 0) {
       this._renderEmptyList();
       return;
-    } else {
-      this._renderMainFilmsList();
-      this._renderMostCommentedList();
-      this._renderTopRatedList();
     }
+    this._renderMainFilmsList();
+    this._renderMostCommentedList();
+    this._renderTopRatedList();
   }
 }

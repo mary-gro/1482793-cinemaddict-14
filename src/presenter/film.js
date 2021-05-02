@@ -114,24 +114,27 @@ export default class Film {
     this._closePopup();
   }
 
+  _updateFilm(details) {
+    const film = this._film;
+    const updatedFilm = Object.assign({}, film, {userDetails: details});
+    this._changeData(updatedFilm);
+  }
+
   _handleWatchlistClick() {
     const film = this._film;
     const updatedUserDetails = Object.assign({}, film.userDetails, {watchlist: !film.userDetails.watchlist});
-    const updatedFilm = Object.assign({}, film, {userDetails: updatedUserDetails});
-    this._changeData(updatedFilm);
+    this._updateFilm(updatedUserDetails);
   }
 
   _handleWatchedClick() {
     const film = this._film;
     const updatedUserDetails = Object.assign({}, film.userDetails, {alreadyWatched: !film.userDetails.alreadyWatched});
-    const updatedFilm = Object.assign({}, film, {userDetails: updatedUserDetails});
-    this._changeData(updatedFilm);
+    this._updateFilm(updatedUserDetails);
   }
 
   _handleFavoritesClick() {
     const film = this._film;
     const updatedUserDetails = Object.assign({}, film.userDetails, {favorite: !film.userDetails.favorite});
-    const updatedFilm = Object.assign({}, film, {userDetails: updatedUserDetails});
-    this._changeData(updatedFilm);
+    this._updateFilm(updatedUserDetails);
   }
 }

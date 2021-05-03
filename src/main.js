@@ -4,7 +4,7 @@ import StatisticsView from './view/statistics.js';
 import {generateFilmCard} from './mock/film-card.js';
 import {generateFilter} from './mock/filter.js';
 import FilmsListPresenter from './presenter/films-list.js';
-import {render} from './utils/render.js';
+import {render, RenderPosition} from './utils/render.js';
 
 const FILM_CARDS_COUNT = 20;
 
@@ -17,13 +17,13 @@ const headerElement = bodyElement.querySelector('.header');
 const mainElement = bodyElement.querySelector('.main');
 const footerElement = bodyElement.querySelector('.footer');
 
-render(headerElement, new UserRankView());
+render(headerElement, new UserRankView(), RenderPosition.BEFOREEND);
 
-render(mainElement, new SiteMenuView(filters));
+render(mainElement, new SiteMenuView(filters), RenderPosition.BEFOREEND);
 
 const filmListPresenter = new FilmsListPresenter(mainElement);
 filmListPresenter.init(filmCards);
 
 const siteStatisticsElement = footerElement.querySelector('.footer__statistics');
 
-render(siteStatisticsElement, new StatisticsView(filmCards.length));
+render(siteStatisticsElement, new StatisticsView(filmCards.length), RenderPosition.BEFOREEND);

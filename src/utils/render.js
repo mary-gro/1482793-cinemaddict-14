@@ -25,7 +25,7 @@ export const render = (container, child, place) => {
       containerElement.append(childElement);
       break;
     default:
-      throw new Error('Непредвиденная ошибка');
+      throw new Error('Unexpected error - unknown rendering position');
   }
 };
 

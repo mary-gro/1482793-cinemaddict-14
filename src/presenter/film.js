@@ -1,6 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
-import {render, remove, replace} from '../utils/render.js';
+import {render, remove, replace, RenderPosition} from '../utils/render.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -40,7 +40,7 @@ export default class Film {
     this._filmComponent.setFavoritesClickHandler(this._handleFavoritesClick);
 
     if (prevFilmComponent === null) {
-      return render(this._filmsContainer, this._filmComponent);
+      return render(this._filmsContainer, this._filmComponent, RenderPosition.BEFOREEND);
     }
 
     if (this._filmsContainer.contains(prevFilmComponent.getElement())) {
@@ -68,7 +68,7 @@ export default class Film {
     this._popupComponent.setClosePopupClickHandler(this._handleClosePopupClick);
 
     if (prevPopupComponent === null) {
-      render(this._bodyElement, this._popupComponent);
+      render(this._bodyElement, this._popupComponent, RenderPosition.BEFOREEND);
       this._bodyElement.classList.add('hide-overflow');
       document.addEventListener('keydown', this._escKeyDownHandler);
       return;

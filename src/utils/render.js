@@ -1,6 +1,11 @@
 import Abstract from '../view/abstract.js';
 
-export const render = (container, child) => {
+export const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
+export const render = (container, child, place) => {
   let containerElement = container;
   let childElement = child;
 
@@ -12,7 +17,16 @@ export const render = (container, child) => {
     childElement = childElement.getElement();
   }
 
-  containerElement.append(childElement);
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      containerElement.prepend(childElement);
+      break;
+    case RenderPosition.BEFOREEND:
+      containerElement.append(childElement);
+      break;
+    default:
+      throw new Error('Unexpected error - unknown rendering position');
+  }
 };
 
 export const createElement = (template) => {

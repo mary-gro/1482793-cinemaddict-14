@@ -193,14 +193,26 @@ export default class FilmPopup extends SmartView {
   }
 
   _watchlistClickHandler() {
+    const updatedUserDetails = Object.assign({}, this._data.userDetails, {watchlist: !this._data.userDetails.watchlist});
+    this.updateData({
+      userDetails: updatedUserDetails,
+    });
     this._callback.watchlistClick();
   }
 
   _watchedClickHandler() {
+    const updatedUserDetails = Object.assign({}, this._data.userDetails, {alreadyWatched: !this._data.userDetails.alreadyWatched});
+    this.updateData({
+      userDetails: updatedUserDetails,
+    });
     this._callback.watchedClick();
   }
 
   _favoritesClickHandler() {
+    const updatedUserDetails = Object.assign({}, this._data.userDetails, {favorite: !this._data.userDetails.favorite});
+    this.updateData({
+      userDetails: updatedUserDetails,
+    });
     this._callback.favoritesClick();
   }
 
@@ -211,11 +223,9 @@ export default class FilmPopup extends SmartView {
   }
 
   _emojiChangeHandler(evt) {
-    const scroll = this.getElement().scrollTop;
     this.updateData({
       emoji: evt.target.value,
     });
-    this.getElement().scrollTop = scroll;
   }
 
   _setInnerHandlers() {

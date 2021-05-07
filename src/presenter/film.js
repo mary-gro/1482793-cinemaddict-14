@@ -96,6 +96,7 @@ export default class Film {
 
   _closePopup() {
     if (this._mode !== Mode.DEFAULT) {
+      this._popupComponent.reset(this._film);
       this._popupComponent.getElement().remove();
       this._popupComponent = null;
       this._mode = Mode.DEFAULT;

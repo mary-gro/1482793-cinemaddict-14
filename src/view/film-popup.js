@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {getRuntime, getCommentDate} from '../utils/film.js';
 import SmartView from './smart.js';
 
 export const createFilmPopupTemplate = (filmCard) => {
@@ -19,7 +20,7 @@ export const createFilmPopupTemplate = (filmCard) => {
             <p class="film-details__comment-text">${comment.text}</p>
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${comment.author}</span>
-              <span class="film-details__comment-day">${comment.date}</span>
+              <span class="film-details__comment-day">${getCommentDate(comment.date)}</span>
               <button class="film-details__comment-delete">Delete</button>
             </p>
           </div>
@@ -71,7 +72,7 @@ export const createFilmPopupTemplate = (filmCard) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${runtime}</td>
+                <td class="film-details__cell">${getRuntime(runtime)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>

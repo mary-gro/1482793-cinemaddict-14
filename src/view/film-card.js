@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {getRuntime} from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const createFilmCardTemplate = (filmCard) => {
@@ -20,7 +21,7 @@ const createFilmCardTemplate = (filmCard) => {
     <p class="film-card__rating">${totalRating}</p>
     <p class="film-card__info">
       <span class="film-card__year">${dayjs(release.date).format('YYYY')}</span>
-      <span class="film-card__duration">${runtime}</span>
+      <span class="film-card__duration">${getRuntime(runtime)}</span>
       <span class="film-card__genre">${genres.join(', ')}</span>
     </p>
     <img src="./images/posters/${poster}" alt="" class="film-card__poster">

@@ -88,12 +88,6 @@ const FILMS_YEARS_GAP_START = -90;
 
 const WATCHING_DATE_YEARS_GAP_START = -5;
 
-const getRuntime = (duration) => {
-  const hours = Math.trunc(duration/60);
-  const minutes = duration % 60;
-  return `${hours}h ${minutes}m`;
-};
-
 const FilmDuration = {
   MIN: 45,
   MAX: 180,
@@ -110,7 +104,7 @@ const generateComment = () => {
     text: getRandomArrayElement(DESCRIPTIONS),
     author: getRandomArrayElement(PEOPLE),
     emoji: getRandomArrayElement(EMOTIONS),
-    date: dayjs(getDate(COMMENTS_YEARS_GAP_START)).format('YYYY/DD/MM HH:mm'),
+    date: getDate(COMMENTS_YEARS_GAP_START),
   };
 };
 
@@ -131,7 +125,7 @@ export const generateFilmCard = () => {
         date: getDate(FILMS_YEARS_GAP_START),
         releaseCountry: getRandomArrayElement(COUNTRIES),
       },
-      runtime: getRuntime(getRandomInteger(FilmDuration.MIN, FilmDuration.MAX)),
+      runtime: getRandomInteger(FilmDuration.MIN, FilmDuration.MAX),
       genres: getRandomArray(GENRES),
       description: getRandomArray(DESCRIPTIONS, DESCRIPTION_MAX_LENGTH).join(' '),
     },

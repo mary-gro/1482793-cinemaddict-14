@@ -20,7 +20,6 @@ export default class Smart extends AbstractView {
     if (justDataUpdating) {
       return;
     }
-
     this.updateElement();
   }
 
@@ -34,11 +33,10 @@ export default class Smart extends AbstractView {
 
     parent.replaceChild(newElement, prevElement);
     newElement.scrollTop = this._scroll;
-
     this.restoreHandlers();
   }
 
   restoreHandlers() {
-    throw new Error('Abstract method not implemented: resetHandlers');
+    throw new Error('Abstract method not implemented: restoreHandlers');
   }
 }

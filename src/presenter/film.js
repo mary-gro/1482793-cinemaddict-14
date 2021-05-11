@@ -1,6 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
 import {render, remove, replace, RenderPosition} from '../utils/render.js';
+import {UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -25,6 +26,8 @@ export default class Film {
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoritesClick = this._handleFavoritesClick.bind(this);
+    this._handleCommentDeleteClick = this._handleCommentDeleteClick.bind(this);
+    this._commentAddHandler = this._commentAddHandler.bind(this);
   }
 
   init(film) {
@@ -59,13 +62,14 @@ export default class Film {
     this._mode = Mode.POPUP;
 
     const prevPopupComponent = this._popupComponent;
-
     this._popupComponent = new FilmPopupView(this._film);
 
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._popupComponent.setFavoritesClickHandler(this._handleFavoritesClick);
     this._popupComponent.setClosePopupClickHandler(this._handleClosePopupClick);
+    this._popupComponent.setCommentDeleteHandler(this._handleCommentDeleteClick);
+    this._popupComponent.setCommentAddHandler(this._commentAddHandler);
 
     if (prevPopupComponent === null) {
       render(this._bodyElement, this._popupComponent, RenderPosition.BEFOREEND);
@@ -116,26 +120,36 @@ export default class Film {
   }
 
   _updateFilm(details) {
-    const film = this._film;
-    const updatedFilm = Object.assign({}, film, {userDetails: details});
-    this._changeData(updatedFilm);
+    const updatedFilm = Object.assign({}, this._film, {userDetails: details});
+    this._changeData(UpdateType.PATCH, updatedFilm);
   }
 
   _handleWatchlistClick() {
-    const film = this._film;
-    const updatedUserDetails = Object.assign({}, film.userDetails, {watchlist: !film.userDetails.watchlist});
+    const updatedUserDetails = Object.assign({}, this._film.userDetails, {watchlist: !this._film.userDetails.watchlist});
     this._updateFilm(updatedUserDetails);
   }
 
   _handleWatchedClick() {
-    const film = this._film;
-    const updatedUserDetails = Object.assign({}, film.userDetails, {alreadyWatched: !film.userDetails.alreadyWatched});
+    const updatedUserDetails = Object.assign({}, this._film.userDetails, {alreadyWatched: !this._film.userDetails.alreadyWatched});
     this._updateFilm(updatedUserDetails);
   }
 
   _handleFavoritesClick() {
-    const film = this._film;
-    const updatedUserDetails = Object.assign({}, film.userDetails, {favorite: !film.userDetails.favorite});
+    const updatedUserDetails = Object.assign({}, this._film.userDetails, {favorite: !this._film.userDetails.favorite});
     this._updateFilm(updatedUserDetails);
+  }
+
+  _commentAddHandler() {
+    // отправка комментария на сервер
+  }
+
+  _handleCommentDeleteClick(evt, id) {
+    evt.preventDefault();
+    const film = this._film;
+    const currentComments = film.comments.slice().filter((item) => {
+      return item.id !== id;
+    });
+    const updatedUserDetails = Object.assign({}, film, {comments: currentComments});
+    this._changeData(UpdateType.PATCH, updatedUserDetails);
   }
 }

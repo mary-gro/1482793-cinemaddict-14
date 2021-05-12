@@ -258,11 +258,9 @@ export default class FilmPopup extends SmartView {
   _commentDeleteHandler(evt) {
     if (evt.target.matches('.film-details__comment-delete')) {
       const id = evt.target.closest('.film-details__comment').dataset.id;
-      const currentComments = this._data.comments.slice().filter((item) => {
-        return item.id !== id;
-      });
+      const comments = this._data.comments.filter((item) => item.id !== id);
       this.updateData({
-        comments: currentComments,
+        comments,
       });
       this._callback.commentDelete(evt, id);
     }

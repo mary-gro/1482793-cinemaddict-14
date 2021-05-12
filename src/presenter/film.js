@@ -146,10 +146,8 @@ export default class Film {
   _handleCommentDeleteClick(evt, id) {
     evt.preventDefault();
     const film = this._film;
-    const currentComments = film.comments.slice().filter((item) => {
-      return item.id !== id;
-    });
-    const updatedUserDetails = Object.assign({}, film, {comments: currentComments});
+    const comments = film.comments.filter((item) => item.id !== id);
+    const updatedUserDetails = Object.assign({}, film, {comments});
     this._changeData(UpdateType.PATCH, updatedUserDetails);
   }
 }

@@ -142,13 +142,7 @@ export default class FilmsList {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        Object
-          .values(this._filmPresenters)
-          .forEach((presenter) => {
-            if (data.id in presenter) {
-              presenter[data.id].init(data);
-            }
-          });
+        this._updateFilmInList(data);
         break;
       case UpdateType.MINOR:
         this._clearFilmsList();
@@ -159,6 +153,16 @@ export default class FilmsList {
         this._renderFilmsList();
         break;
     }
+  }
+
+  _updateFilmInList(data) {
+    Object
+      .values(this._filmPresenters)
+      .forEach((presenter) => {
+        if (data.id in presenter) {
+          presenter[data.id].init(data);
+        }
+      });
   }
 
   _renderShowMoreButton() {
@@ -174,7 +178,7 @@ export default class FilmsList {
       .sort((a, b) => b.comments.length - a.comments.length)
       .slice(0, FILMS_COUNT_EXTRA);
 
-    if (mostCommentedFilms.slice().filter((film) => film.comments.length > 0).length > 0) {
+    if (mostCommentedFilms.filter((film) => film.comments.length > 0).length > 0) {
       this._filmsListMostCommentedComponent = new FilmsListMostCommentedView();
       render(this._filmsSectionComponent, this._filmsListMostCommentedComponent, RenderPosition.BEFOREEND);
       this._mostCommentedContainer = this._filmsListMostCommentedComponent.getElement().querySelector('.films-list__container');
@@ -188,7 +192,7 @@ export default class FilmsList {
       .sort(sortByRating)
       .slice(0, FILMS_COUNT_EXTRA);
 
-    if (topRatedFilms.slice().filter((film) => film.filmInfo.totalRating > 0).length > 0) {
+    if (topRatedFilms.filter((film) => film.filmInfo.totalRating > 0).length > 0) {
       this._filmsListTopRatedComponent = new FilmsListTopRatedView();
       render(this._filmsSectionComponent, this._filmsListTopRatedComponent, RenderPosition.BEFOREEND);
       this._topRatedContainer = this._filmsListTopRatedComponent.getElement().querySelector('.films-list__container');
@@ -217,11 +221,7 @@ export default class FilmsList {
       remove(this._filmsListTopRatedComponent);
     }
 
-    if (resetRenderedFilmsCount) {
-      this._renderedFilmsCount = SHOWED_FILMS_COUNT;
-    } else {
-      this._renderedFilmsCount = Math.min(filmsCount, this._renderedFilmsCount);
-    }
+    this._renderedFilmsCount = resetRenderedFilmsCount ? SHOWED_FILMS_COUNT : Math.min(filmsCount, this._renderedFilmsCount);
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;

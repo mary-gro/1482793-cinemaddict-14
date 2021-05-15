@@ -86,16 +86,16 @@ const COMMENTS_YEARS_GAP_START = -5;
 
 const FILMS_YEARS_GAP_START = -90;
 
-const WATCHING_DATE_YEARS_GAP_START = -5;
+const WATCHING_DATE_DAYS_GAP_START = -40;
 
 const FilmDuration = {
   MIN: 45,
   MAX: 180,
 };
 
-const getDate = (yearsGapStart) => {
-  const yearsGap = getRandomInteger(yearsGapStart, 0);
-  return dayjs().add(yearsGap, 'year').toDate();
+const getDate = (daysGapStart) => {
+  const daysGap = getRandomInteger(daysGapStart, 0);
+  return dayjs().add(daysGap, 'day').toDate();
 };
 
 const generateComment = () => {
@@ -132,7 +132,7 @@ export const generateFilmCard = () => {
     userDetails: {
       watchlist: Boolean(getRandomInteger(0, 1)),
       alreadyWatched: Boolean(getRandomInteger(0, 1)),
-      watchingDate: getDate(WATCHING_DATE_YEARS_GAP_START),
+      watchingDate: getDate(WATCHING_DATE_DAYS_GAP_START),
       favorite: Boolean(getRandomInteger(0, 1)),
     },
   };

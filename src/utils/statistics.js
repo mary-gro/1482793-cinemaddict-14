@@ -11,13 +11,6 @@ export const getUserRank = (films) => {
     return false;
   }
 
-  // if (watchedFilmsCount >= RankScore.NOVICE.MIN && watchedFilmsCount <= RankScore.NOVICE.MAX) {
-  //   return RankType.NOVICE;
-  // } else if (watchedFilmsCount >= RankScore.FAN.MIN && watchedFilmsCount <= RankScore.FAN.MAX) {
-  //   return RankType.FAN;
-  // } else if (watchedFilmsCount > RankScore.FAN.MAX) {
-  //   return RankType.MOVIE_BUFF;
-  // }
   if (watchedFilmsCount >= RankScore.NOVICE.MIN && watchedFilmsCount <= RankScore.NOVICE.MAX) {
     return RankType.NOVICE;
   }

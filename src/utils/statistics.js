@@ -11,11 +11,22 @@ export const getUserRank = (films) => {
     return false;
   }
 
+  // if (watchedFilmsCount >= RankScore.NOVICE.MIN && watchedFilmsCount <= RankScore.NOVICE.MAX) {
+  //   return RankType.NOVICE;
+  // } else if (watchedFilmsCount >= RankScore.FAN.MIN && watchedFilmsCount <= RankScore.FAN.MAX) {
+  //   return RankType.FAN;
+  // } else if (watchedFilmsCount > RankScore.FAN.MAX) {
+  //   return RankType.MOVIE_BUFF;
+  // }
   if (watchedFilmsCount >= RankScore.NOVICE.MIN && watchedFilmsCount <= RankScore.NOVICE.MAX) {
     return RankType.NOVICE;
-  } else if (watchedFilmsCount >= RankScore.FAN.MIN && watchedFilmsCount <= RankScore.FAN.MAX) {
+  }
+
+  if (watchedFilmsCount >= RankScore.FAN.MIN && watchedFilmsCount <= RankScore.FAN.MAX) {
     return RankType.FAN;
-  } else if (watchedFilmsCount > RankScore.FAN.MAX) {
+  }
+
+  if (watchedFilmsCount > RankScore.FAN.MAX) {
     return RankType.MOVIE_BUFF;
   }
 };
@@ -52,7 +63,9 @@ export const getTopGenre = (films) => {
   }
 
   const genresStatistics = getGenresStatistics(films);
-  return Object.entries(genresStatistics).sort((a, b) => b[1] - a[1])[0][0];
+  const topGenreStatistics = Object.entries(genresStatistics).sort((a, b) => b[1] - a[1])[0];
+  const topGenreName = topGenreStatistics[0];
+  return topGenreName;
 };
 
 export const filterByDate = (films, filterType) => {

@@ -1,27 +1,31 @@
 import FooterStatisticsView from './view/footer-statistics.js';
 import StatisticsView from './view/statistics.js';
-import {generateFilmCard} from './mock/film-card.js';
 import FilterPresenter from './presenter/filter.js';
 import FilmsListPresenter from './presenter/films-list.js';
 import UserProfilePresenter from './presenter/user-profile.js';
 import FilmsModel from './model/films.js';
+import CommentsModel from './model/comments.js';
 import FilterModel from './model/filter.js';
 import {render, RenderPosition, remove} from './utils/render.js';
-import {MenuItem} from './const.js';
+import {MenuItem, UpdateType} from './const.js';
+import Api from './api.js';
 
-const FILM_CARDS_COUNT = 20;
-
-const filmCards = new Array(FILM_CARDS_COUNT).fill().map(() => generateFilmCard());
-
-const filmsModel = new FilmsModel();
-filmsModel.setFilms(filmCards);
-
-const filterModel = new FilterModel();
+const AUTHORIZATION = 'Basic m1a2r3y4';
+const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
 const bodyElement = document.querySelector('body');
 const headerElement = bodyElement.querySelector('.header');
 const mainElement = bodyElement.querySelector('.main');
 const footerElement = bodyElement.querySelector('.footer');
+const footerStatisticsElement = footerElement.querySelector('.footer__statistics');
+
+const api = new Api(END_POINT, AUTHORIZATION);
+
+const filmsModel = new FilmsModel();
+
+const filterModel = new FilterModel();
+
+const commentsModel = new CommentsModel();
 
 let statisticsComponent = null;
 
@@ -42,12 +46,18 @@ const changeMenuSection = (menuItem) => {
 
 const userProfilePresenter = new UserProfilePresenter(headerElement, filmsModel);
 const filterPresenter = new FilterPresenter(mainElement, filterModel, filmsModel, changeMenuSection);
-const filmListPresenter = new FilmsListPresenter(mainElement, filmsModel, filterModel);
+const filmListPresenter = new FilmsListPresenter(mainElement, filmsModel, filterModel, commentsModel, api);
 
-userProfilePresenter.init();
 filterPresenter.init();
 filmListPresenter.init();
+userProfilePresenter.init();
 
-const footerStatisticsElement = footerElement.querySelector('.footer__statistics');
-
-render(footerStatisticsElement, new FooterStatisticsView(filmCards.length), RenderPosition.BEFOREEND);
+api.getFilms()
+  .then((films) => {
+    filmsModel.setFilms(UpdateType.INIT, films);
+    render(footerStatisticsElement, new FooterStatisticsView(films.length), RenderPosition.BEFOREEND);
+  })
+  .catch(() => {
+    filmsModel.setFilms(UpdateType.INIT, []);
+    render(footerStatisticsElement, new FooterStatisticsView(0), RenderPosition.BEFOREEND);
+  });

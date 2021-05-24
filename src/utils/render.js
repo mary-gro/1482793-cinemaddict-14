@@ -6,23 +6,20 @@ export const RenderPosition = {
 };
 
 export const render = (container, child, place) => {
-  let containerElement = container;
-  let childElement = child;
-
-  if (containerElement instanceof Abstract) {
-    containerElement = containerElement.getElement();
+  if (container instanceof Abstract) {
+    container = container.getElement();
   }
 
-  if (childElement instanceof Abstract) {
-    childElement = childElement.getElement();
+  if (child instanceof Abstract) {
+    child = child.getElement();
   }
 
   switch (place) {
     case RenderPosition.AFTERBEGIN:
-      containerElement.prepend(childElement);
+      container.prepend(child);
       break;
     case RenderPosition.BEFOREEND:
-      containerElement.append(childElement);
+      container.append(child);
       break;
     default:
       throw new Error('Unexpected error - unknown rendering position');

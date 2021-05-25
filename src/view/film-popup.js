@@ -3,11 +3,10 @@ import he from 'he';
 import {getRuntime, getCommentDate} from '../utils/film.js';
 import SmartView from './smart.js';
 
-export const createFilmPopupTemplate = (filmCard) => {
+export const createFilmPopupTemplate = (filmCard, newComment) => {
   const {title, alternativeTitle, totalRating, poster, ageRating, director, writers, actors, release, runtime, genres, description} = filmCard.filmInfo;
   const {watchlist, alreadyWatched, favorite} = filmCard.userDetails;
-  const emoji = filmCard.emoji;
-  const comment = filmCard.comment;
+  const {comment, emoji} = newComment;
   const comments = filmCard.comments;
   const isDisabled = filmCard.isDisabled;
   const isDeleting = filmCard.isDeleting;
@@ -139,6 +138,11 @@ export default class FilmPopup extends SmartView {
     super();
     this._data = FilmPopup.parseFilmToData(filmCard, comments);
 
+    this._newComment = {
+      comment: '',
+      emoji: '',
+    };
+
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
@@ -146,13 +150,12 @@ export default class FilmPopup extends SmartView {
     this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
     this._commentDeleteHandler = this._commentDeleteHandler.bind(this);
-    this._commentAddHandler = this._commentAddHandler.bind(this);
 
     this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createFilmPopupTemplate(this._data);
+    return createFilmPopupTemplate(this._data, this._newComment);
   }
 
   static parseFilmToData(filmCard, comments) {
@@ -160,9 +163,7 @@ export default class FilmPopup extends SmartView {
       {},
       filmCard,
       {
-        comment: '',
-        emoji: null,
-        comments: comments.getComments(),
+        comments,
       },
     );
   }
@@ -170,8 +171,6 @@ export default class FilmPopup extends SmartView {
   static parseDataToFilm(data) {
     data = Object.assign({}, data);
 
-    delete data.emoji;
-    delete data.comment;
     delete data.comments;
     delete data.isDisabled;
     delete data.isDeleting;
@@ -201,26 +200,29 @@ export default class FilmPopup extends SmartView {
   }
 
   _commentInputHandler(evt) {
-    this.updateData({
-      comment: evt.target.value,
-    }, true);
+    this._newComment = Object.assign(
+      {},
+      this._newComment,
+      {
+        comment: evt.target.value,
+      },
+    );
   }
 
   _emojiChangeHandler(evt) {
-    this.updateData({
-      emoji: evt.target.value,
-    });
+    this._newComment = Object.assign(
+      {},
+      this._newComment,
+      {
+        emoji: evt.target.value,
+      },
+    );
+
+    this.updateData(this._newComment);
   }
 
-  _commentAddHandler(evt) {
-    if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
-      const newComment = {
-        comment: this._data.comment,
-        emoji: this._data.emoji,
-      };
-
-      this._callback.commentAdd(newComment);
-    }
+  getNewComment() {
+    return this._newComment;
   }
 
   _commentDeleteHandler(evt) {
@@ -268,11 +270,6 @@ export default class FilmPopup extends SmartView {
       .addEventListener('click', this._favoritesClickHandler);
   }
 
-  setCommentAddHandler(callback) {
-    this._callback.commentAdd = callback;
-    document.addEventListener('keydown', this._commentAddHandler);
-  }
-
   setCommentDeleteHandler(callback) {
     this._callback.commentDelete = callback;
     const deleteButtons = this.getElement().querySelectorAll('.film-details__comment-delete');
@@ -286,6 +283,5 @@ export default class FilmPopup extends SmartView {
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setWatchedClickHandler(this._callback.watchedClick);
     this.setCommentDeleteHandler(this._callback.commentDelete);
-    this.setCommentAddHandler(this._callback.commentAdd);
   }
 }

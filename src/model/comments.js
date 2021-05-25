@@ -15,15 +15,25 @@ export default class Comments extends Observer {
     return this._comments;
   }
 
-  addComment(updateType, update, comments) {
-    this._comments = comments;
+  addComment(updateType, update) {
+    this._comments = [
+      ...this._comments,
+      update,
+    ];
 
-    this._notify(updateType, update);
+    this._notify(updateType);
   }
 
   deleteComment(updateType, commentId) {
-    this._comments = this._comments.filter((comment) => comment.id !== commentId);
+    const index = this._comments.findIndex((comment) => comment.id === commentId);
+    if (index === -1) {
+      throw new Error('Can\'t delete unexisting comment');
+    }
 
+    this._comments = [
+      ...this._comments.slice(0, index),
+      ...this._comments.slice(index + 1),
+    ];
     this._notify(updateType);
   }
 

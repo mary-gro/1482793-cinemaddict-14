@@ -16,10 +16,9 @@ const SHOWED_FILMS_COUNT = 5;
 const FILMS_COUNT_EXTRA = 2;
 
 export default class FilmsList {
-  constructor(filmsContainer, filmsModel, filterModel, commentsModel, api) {
+  constructor(filmsContainer, filmsModel, filterModel, api) {
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
-    this._commentsModel = commentsModel;
     this._filmsContainer = filmsContainer;
     this._renderedFilmsCount = SHOWED_FILMS_COUNT;
     this._currentSortType = SortType.DEFAULT;
@@ -94,7 +93,7 @@ export default class FilmsList {
   }
 
   _renderFilm(container, film) {
-    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleModeChange, this._commentsModel, this._api);
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleModeChange, this._api);
     filmPresenter.init(film);
 
     switch (container.id) {

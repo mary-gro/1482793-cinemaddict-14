@@ -2,6 +2,7 @@ import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
 import {render, remove, replace, RenderPosition} from '../utils/render.js';
 import {UpdateType, UserAction, PopupState} from '../const.js';
+import CommentsModel from '../model/comments.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -9,11 +10,11 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(filmsContainer, changeData, changeMode, commentsModel, api) {
+  constructor(filmsContainer, changeData, changeMode, api) {
     this._filmsContainer = filmsContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
-    this._commentsModel = commentsModel;
+    this._commentsModel = new CommentsModel();
     this._api = api;
 
     this._filmComponent = null;

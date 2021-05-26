@@ -4,7 +4,6 @@ import FilterPresenter from './presenter/filter.js';
 import FilmsListPresenter from './presenter/films-list.js';
 import UserProfilePresenter from './presenter/user-profile.js';
 import FilmsModel from './model/films.js';
-import CommentsModel from './model/comments.js';
 import FilterModel from './model/filter.js';
 import {render, RenderPosition, remove} from './utils/render.js';
 import {MenuItem, UpdateType} from './const.js';
@@ -25,8 +24,6 @@ const filmsModel = new FilmsModel();
 
 const filterModel = new FilterModel();
 
-const commentsModel = new CommentsModel();
-
 let statisticsComponent = null;
 
 const changeMenuSection = (menuItem) => {
@@ -46,7 +43,7 @@ const changeMenuSection = (menuItem) => {
 
 const userProfilePresenter = new UserProfilePresenter(headerElement, filmsModel);
 const filterPresenter = new FilterPresenter(mainElement, filterModel, filmsModel, changeMenuSection);
-const filmListPresenter = new FilmsListPresenter(mainElement, filmsModel, filterModel, commentsModel, api);
+const filmListPresenter = new FilmsListPresenter(mainElement, filmsModel, filterModel, api);
 
 filterPresenter.init();
 filmListPresenter.init();

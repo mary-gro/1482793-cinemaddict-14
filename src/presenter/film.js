@@ -113,6 +113,8 @@ export default class Film {
         this._renderPopup(this._commentsModel.getComments());
       })
       .catch(() => {
+        this._commentsModel.setComments([]);
+        this._renderPopup(this._commentsModel.getComments());
       });
   }
 

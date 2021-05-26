@@ -165,6 +165,25 @@ export default class FilmPopup extends SmartView {
     return createFilmPopupTemplate(this._data);
   }
 
+  updatePopup(comments) {
+    this.updateData({
+      comments,
+      comment: '',
+      emotion: '',
+      isDeleting: false,
+      deletingCommentId: '',
+      isDisabled: false,
+    });
+  }
+
+  getNewComment() {
+    const newComment = {
+      comment: this._data.comment,
+      emotion: this._data.emotion,
+    };
+    return newComment;
+  }
+
   _closeButtonClickHandler() {
     this._callback.closeButtonClick();
   }
@@ -211,25 +230,6 @@ export default class FilmPopup extends SmartView {
   _emojiChangeHandler(evt) {
     this.updateData({
       emotion: evt.target.value,
-    });
-  }
-
-  getNewComment() {
-    const newComment = {
-      comment: this._data.comment,
-      emotion: this._data.emotion,
-    };
-    return newComment;
-  }
-
-  updatePopup(comments) {
-    this.updateData({
-      comments,
-      comment: '',
-      emotion: '',
-      isDeleting: false,
-      deletingCommentId: '',
-      isDisabled: false,
     });
   }
 

@@ -140,7 +140,6 @@ export default class Film {
   _updateFilm(details) {
     const updatedFilm = Object.assign({}, this._film, {userDetails: details});
     this._changeData(this._mode === Mode.DEFAULT ? UpdateType.MINOR : this._mode === Mode.POPUP ? UpdateType.PATCH : '', updatedFilm);
-    this._changeData(UpdateType.PATCH, updatedFilm);
   }
 
   _handleWatchlistClick() {

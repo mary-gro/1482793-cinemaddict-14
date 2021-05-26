@@ -57,10 +57,6 @@ export default class Film {
       replace(this._filmComponent, prevFilmComponent);
     }
 
-    if (this._mode === Mode.POPUP) {
-      this._renderPopup();
-    }
-
     remove(prevFilmComponent);
   }
 
@@ -71,39 +67,36 @@ export default class Film {
     }
   }
 
-  _renderPopup() {
-    if (this._mode !== Mode.POPUP) {
-      this._changeMode();
-    }
+  _renderPopup(comments) {
+    this._changeMode();
     this._mode = Mode.POPUP;
+    this._comments = comments;
 
-    this._api.getComments(this._film.id)
-      .then((comments) => {
-        const prevPopupComponent = this._popupComponent;
-        this._commentsModel.setComments(comments);
-        this._popupComponent = new FilmPopupView(this._film, this._commentsModel.getComments());
+    const prevPopupComponent = this._popupComponent;
+    this._popupComponent = new FilmPopupView(this._film, this._comments);
 
-        this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-        this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
-        this._popupComponent.setFavoritesClickHandler(this._handleFavoritesClick);
-        this._popupComponent.setClosePopupClickHandler(this._handleClosePopupClick);
-        this._popupComponent.setCommentDeleteHandler(this._handleCommentDeleteClick);
+    this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
+    this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
+    this._popupComponent.setFavoritesClickHandler(this._handleFavoritesClick);
+    this._popupComponent.setClosePopupClickHandler(this._handleClosePopupClick);
+    this._popupComponent.setCommentDeleteHandler(this._handleCommentDeleteClick);
 
-        if (prevPopupComponent !== null && this._bodyElement.contains(prevPopupComponent.getElement())) {
-          const scrollPosition = prevPopupComponent.getElement().scrollTop;
-          replace(this._popupComponent, prevPopupComponent);
-          this._popupComponent.getElement().scrollTo(0, scrollPosition);
-          this._bodyElement.classList.add('hide-overflow');
-          document.addEventListener('keydown', this._escKeyDownHandler);
-          document.addEventListener('keydown', this._commentAddHandler);
-          remove(prevPopupComponent);
-        } else {
-          render(this._bodyElement, this._popupComponent, RenderPosition.BEFOREEND);
-          this._bodyElement.classList.add('hide-overflow');
-          document.addEventListener('keydown', this._escKeyDownHandler);
-          document.addEventListener('keydown', this._commentAddHandler);
-        }
-      });
+    if (prevPopupComponent === null) {
+      render(this._bodyElement, this._popupComponent, RenderPosition.BEFOREEND);
+      this._bodyElement.classList.add('hide-overflow');
+      document.addEventListener('keydown', this._escKeyDownHandler);
+      document.addEventListener('keydown', this._commentAddHandler);
+      return;
+    }
+
+    if (this._mode === Mode.POPUP) {
+      replace(this._popupComponent, prevPopupComponent);
+      this._bodyElement.classList.add('hide-overflow');
+      document.addEventListener('keydown', this._escKeyDownHandler);
+      document.addEventListener('keydown', this._commentAddHandler);
+    }
+
+    remove(prevPopupComponent);
   }
 
   _escKeyDownHandler(evt) {
@@ -114,7 +107,13 @@ export default class Film {
   }
 
   _handleShowFilmPopupClick() {
-    this._renderPopup();
+    this._api.getComments(this._film.id)
+      .then((comments) => {
+        this._commentsModel.setComments(comments);
+        this._renderPopup(this._commentsModel.getComments());
+      })
+      .catch(() => {
+      });
   }
 
   _closePopup() {
@@ -158,7 +157,7 @@ export default class Film {
   }
 
   _commentAddHandler(evt) {
-    if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
+    if ((evt.ctrlKey || evt.metaKey) && evt.code === 'Enter') {
       const newComment = this._popupComponent.getNewComment();
       this.setViewState(PopupState.SENDING);
       this._api.addComment(this._film.id, newComment)
@@ -196,6 +195,7 @@ export default class Film {
             },
           ),
         );
+        this._popupComponent.updatePopup(this._commentsModel.getComments());
         break;
       case UserAction.DELETE_COMMENT:
         this._changeData(
@@ -208,6 +208,7 @@ export default class Film {
             },
           ),
         );
+        this._popupComponent.updatePopup(this._commentsModel.getComments());
         break;
     }
   }

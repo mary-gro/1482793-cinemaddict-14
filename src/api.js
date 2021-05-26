@@ -1,5 +1,4 @@
 import FilmsModel from './model/films.js';
-import CommentsModel from './model/comments.js';
 
 const Method = {
   GET: 'GET',
@@ -38,19 +37,17 @@ export default class Api {
 
   getComments(filmId) {
     return this._load({url: `comments/${filmId}`})
-      .then(Api.toJSON)
-      .then((comments) => comments.map(CommentsModel.adaptToClient));
+      .then(Api.toJSON);
   }
 
   addComment(filmId, comment) {
     return this._load({
       url: `comments/${filmId}`,
       method: Method.POST,
-      body: JSON.stringify(CommentsModel.adaptToServer(comment)),
+      body: JSON.stringify(comment),
       headers: new Headers({'Content-Type': 'application/json'}),
     })
-      .then(Api.toJSON)
-      .then(CommentsModel.adaptToClient);
+      .then(Api.toJSON);
   }
 
   deleteComment(commentId) {

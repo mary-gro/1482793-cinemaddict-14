@@ -56,6 +56,16 @@ export default class FilmsList {
     this._renderFilmsList();
   }
 
+  destroy() {
+    this._clearFilmsList({resetRenderedFilmsCount: true, resetSortType: true});
+
+    remove(this._filmsSectionComponent);
+    remove(this._filmsListComponent);
+
+    this._filmsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
   _getFilms() {
     const filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
@@ -268,15 +278,5 @@ export default class FilmsList {
     }
     this._renderMostCommentedList();
     this._renderTopRatedList();
-  }
-
-  destroy() {
-    this._clearFilmsList({resetRenderedFilmsCount: true, resetSortType: true});
-
-    remove(this._filmsSectionComponent);
-    remove(this._filmsListComponent);
-
-    this._filmsModel.removeObserver(this._handleModelEvent);
-    this._filterModel.removeObserver(this._handleModelEvent);
   }
 }

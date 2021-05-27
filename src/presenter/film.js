@@ -69,6 +69,39 @@ export default class Film {
     }
   }
 
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._closePopup();
+    }
+  }
+
+  setViewState(state, id) {
+    const resetState = () => {
+      this._popupComponent.updateData({
+        isDeleting: false,
+        deletingCommentId: '',
+        isDisabled: false,
+      });
+    };
+
+    switch (state) {
+      case PopupState.SENDING:
+        this._popupComponent.updateData({
+          isDisabled: true,
+        });
+        break;
+      case PopupState.DELETING:
+        this._popupComponent.updateData({
+          isDeleting: true,
+          deletingCommentId: id,
+        });
+        break;
+      case PopupState.ABORTING:
+        this._popupComponent.shake(resetState);
+        break;
+    }
+  }
+
   _renderPopup(comments) {
     this._changeMode();
     this._mode = Mode.POPUP;
@@ -83,29 +116,31 @@ export default class Film {
     this._popupComponent.setClosePopupClickHandler(this._handleClosePopupClick);
     this._popupComponent.setCommentDeleteHandler(this._handleCommentDeleteClick);
 
+    this._bodyElement.classList.add('hide-overflow');
+
+    document.addEventListener('keydown', this._escKeyDownHandler);
+    document.addEventListener('keydown', this._commentAddHandler);
+
     if (prevPopupComponent === null) {
       render(this._bodyElement, this._popupComponent, RenderPosition.BEFOREEND);
-      this._bodyElement.classList.add('hide-overflow');
-      document.addEventListener('keydown', this._escKeyDownHandler);
-      document.addEventListener('keydown', this._commentAddHandler);
       return;
     }
 
     if (this._mode === Mode.POPUP) {
       replace(this._popupComponent, prevPopupComponent);
-      this._bodyElement.classList.add('hide-overflow');
-      document.addEventListener('keydown', this._escKeyDownHandler);
-      document.addEventListener('keydown', this._commentAddHandler);
     }
 
     remove(prevPopupComponent);
   }
 
-  _escKeyDownHandler(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this._closePopup();
-    }
+  _closePopup() {
+    this._changeData(UpdateType.MINOR, this._film);
+    remove(this._popupComponent);
+    this._commentsModel.removeObserver(this._handleModelEvent);
+    this._bodyElement.classList.remove('hide-overflow');
+    document.removeEventListener('keydown', this._escKeyDownHandler);
+    document.removeEventListener('keydown', this._commentAddHandler);
+    this._mode = Mode.DEFAULT;
   }
 
   _handleShowFilmPopupClick() {
@@ -120,18 +155,9 @@ export default class Film {
       });
   }
 
-  _closePopup() {
-    this._changeData(UpdateType.MINOR, this._film);
-    remove(this._popupComponent);
-    this._commentsModel.removeObserver(this._handleModelEvent);
-    this._bodyElement.classList.remove('hide-overflow');
-    document.removeEventListener('keydown', this._escKeyDownHandler);
-    document.removeEventListener('keydown', this._commentAddHandler);
-    this._mode = Mode.DEFAULT;
-  }
-
-  resetView() {
-    if (this._mode !== Mode.DEFAULT) {
+  _escKeyDownHandler(evt) {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
       this._closePopup();
     }
   }
@@ -223,33 +249,6 @@ export default class Film {
           ),
         );
         this._popupComponent.updatePopup(this._commentsModel.getComments());
-        break;
-    }
-  }
-
-  setViewState(state, id) {
-    const resetState = () => {
-      this._popupComponent.updateData({
-        isDeleting: false,
-        deletingCommentId: '',
-        isDisabled: false,
-      });
-    };
-
-    switch (state) {
-      case PopupState.SENDING:
-        this._popupComponent.updateData({
-          isDisabled: true,
-        });
-        break;
-      case PopupState.DELETING:
-        this._popupComponent.updateData({
-          isDeleting: true,
-          deletingCommentId: id,
-        });
-        break;
-      case PopupState.ABORTING:
-        this._popupComponent.shake(resetState);
         break;
     }
   }

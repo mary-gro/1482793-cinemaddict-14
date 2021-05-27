@@ -8,6 +8,20 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+};
+
+export const UserAction = {
+  UPDATE_FILM: 'UPDATE_FILM',
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+};
+
+export const PopupState = {
+  SENDING: 'SENDING',
+  DELETING: 'DELETING',
+  ABORTING_SENDING: 'ABORTING_SENDING',
+  ABORTING_DELETING: 'ABORTING_DELETING',
 };
 
 export const FilterType = {

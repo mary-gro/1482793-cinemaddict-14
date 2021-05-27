@@ -1,8 +1,10 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
-import {render, remove, replace, RenderPosition} from '../utils/render.js';
-import {UpdateType, UserAction, PopupState} from '../const.js';
 import CommentsModel from '../model/comments.js';
+import {render, remove, replace, RenderPosition} from '../utils/render.js';
+import {isOnline} from '../utils/common.js';
+import {toast} from '../utils/toast.js';
+import {UpdateType, UserAction, PopupState} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -160,6 +162,11 @@ export default class Film {
 
   _commentAddHandler(evt) {
     if ((evt.ctrlKey || evt.metaKey) && evt.code === 'Enter') {
+      if (!isOnline()) {
+        toast('You can\'t send comment offline');
+        return;
+      }
+
       const newComment = this._popupComponent.getNewComment();
       this.setViewState(PopupState.SENDING);
       this._api.addComment(this._film.id, newComment)
@@ -174,6 +181,11 @@ export default class Film {
   }
 
   _handleCommentDeleteClick(id) {
+    if (!isOnline()) {
+      toast('You can\'t delete comment offline');
+      return;
+    }
+
     this.setViewState(PopupState.DELETING, id);
     this._api.deleteComment(id)
       .then(() => {

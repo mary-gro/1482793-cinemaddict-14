@@ -14,9 +14,10 @@ export default class Filter {
 
     this._filterComponent = null;
 
+    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+    this._statisticsClickHandler = this._statisticsClickHandler.bind(this);
+
     this._handleModelEvent = this._handleModelEvent.bind(this);
-    this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
-    this._handleStatisticsClick = this._handleStatisticsClick.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
@@ -28,8 +29,8 @@ export default class Filter {
     const prevFilterComponent = this._filterComponent;
 
     this._filterComponent = new SiteMenuView(filters, this._currentFilter, this._currentMenuSection);
-    this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
-    this._filterComponent.setStatisticsClickHandler(this._handleStatisticsClick);
+    this._filterComponent.setFilterTypeChangeHandler(this._filterTypeChangeHandler);
+    this._filterComponent.setStatisticsClickHandler(this._statisticsClickHandler);
 
     if (prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
@@ -44,7 +45,7 @@ export default class Filter {
     this.init(this._handleMenuClick);
   }
 
-  _handleFilterTypeChange(filterType) {
+  _filterTypeChangeHandler(filterType) {
     if (this._currentFilter === filterType && this._currentMenuSection === MenuItem.FILMS) {
       return;
     }
@@ -55,7 +56,7 @@ export default class Filter {
     this.init();
   }
 
-  _handleStatisticsClick() {
+  _statisticsClickHandler() {
     if (this._currentMenuSection === MenuItem.STATISTICS) {
       return;
     }
@@ -67,25 +68,32 @@ export default class Filter {
   _getFilters() {
     const films = this._filmsModel.getFilms();
 
+    const FilterTypeResource = {
+      [FilterType.ALL]: 'All',
+      [FilterType.WATCHLIST]: 'Watchlist',
+      [FilterType.HISTORY]: 'History',
+      [FilterType.FAVORITES]: 'Favorites',
+    };
+
     return [
       {
         type: FilterType.ALL,
-        name: 'All',
+        name: FilterTypeResource[FilterType.ALL],
         count: filter[FilterType.ALL](films).length,
       },
       {
         type: FilterType.WATCHLIST,
-        name: 'Watchlist',
+        name: FilterTypeResource[FilterType.WATCHLIST],
         count: filter[FilterType.WATCHLIST](films).length,
       },
       {
         type: FilterType.HISTORY,
-        name: 'History',
+        name: FilterTypeResource[FilterType.HISTORY],
         count: filter[FilterType.HISTORY](films).length,
       },
       {
         type: FilterType.FAVORITES,
-        name: 'Favorites',
+        name: FilterTypeResource[FilterType.FAVORITES],
         count: filter[FilterType.FAVORITES](films).length,
       },
     ];

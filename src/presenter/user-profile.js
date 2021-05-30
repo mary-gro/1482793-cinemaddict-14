@@ -17,7 +17,7 @@ export default class UserProfile {
     const films = this._filmsModel.getFilms();
     const watchedFilmsCount = films.filter((film) => film.userDetails.alreadyWatched).length;
 
-    if (watchedFilmsCount !== 0) {
+    if (watchedFilmsCount) {
       this._userProfileComponent = new UserRankView(getUserRank(films));
       render(this._container, this._userProfileComponent, RenderPosition.BEFOREEND);
     }

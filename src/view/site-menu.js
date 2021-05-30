@@ -7,7 +7,7 @@ const createFilterItemTemplate = (filter, currentFilterType, currentMenuSection)
     type === 'All' ?
       `<a href="#all" class="main-navigation__item ${type === currentFilterType && currentMenuSection === MenuItem.FILMS ? 'main-navigation__item--active' : ''}" data-filter="${type}">All movies</a>` :
       `<a href="#${name}" class="main-navigation__item ${type === currentFilterType && currentMenuSection === MenuItem.FILMS ? 'main-navigation__item--active' : ''}" data-filter="${type}">
-        ${name[0].toUpperCase() + name.slice(1)}
+        ${name[0].toUpperCase()}${name.slice(1)}
         <span class="main-navigation__item-count">${count}</span>
       </a>`
   );

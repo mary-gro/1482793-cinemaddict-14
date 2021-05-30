@@ -60,3 +60,10 @@ export const RankType = {
   FAN: 'Fan',
   MOVIE_BUFF: 'Movie Buff',
 };
+
+export const ButtonType = {
+  ENTER: 'Enter',
+  ESCAPE: 'Escape',
+};
+
+export const MUNUTES_IN_HOUR_COUNT = 60;

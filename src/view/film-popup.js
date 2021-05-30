@@ -3,7 +3,7 @@ import he from 'he';
 import {getRuntime, getCommentDate} from '../utils/film.js';
 import SmartView from './smart.js';
 
-export const createFilmPopupTemplate = (filmCard) => {
+export const createFilmPopupTemplate = (filmCard, isOnline) => {
   const {title, alternativeTitle, totalRating, poster, ageRating, director, writers, actors, release, runtime, genres, description} = filmCard.filmInfo;
   const {watchlist, alreadyWatched, favorite} = filmCard.userDetails;
   const comment = filmCard.comment;
@@ -98,7 +98,7 @@ export const createFilmPopupTemplate = (filmCard) => {
           <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
         </section>
       </div>
-      <div class="film-details__bottom-container">
+      <div class="film-details__bottom-container ${isOnline ? '' : 'visually-hidden'}">
         <section class="film-details__comments-wrap">
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
           <ul class="film-details__comments-list">
@@ -135,7 +135,7 @@ export const createFilmPopupTemplate = (filmCard) => {
 };
 
 export default class FilmPopup extends SmartView {
-  constructor(filmCard, comments) {
+  constructor(filmCard, comments, status) {
     super();
     this._data = Object.assign(
       {},
@@ -149,6 +149,7 @@ export default class FilmPopup extends SmartView {
         isDisabled: false,
       },
     );
+    this._status = status;
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
@@ -162,7 +163,7 @@ export default class FilmPopup extends SmartView {
   }
 
   getTemplate() {
-    return createFilmPopupTemplate(this._data);
+    return createFilmPopupTemplate(this._data, this._status);
   }
 
   updatePopup(comments) {

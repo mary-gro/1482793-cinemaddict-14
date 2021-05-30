@@ -4,7 +4,7 @@ import CommentsModel from '../model/comments.js';
 import {render, remove, replace, RenderPosition} from '../utils/render.js';
 import {isOnline} from '../utils/common.js';
 import {toast} from '../utils/toast.js';
-import {UpdateType, UserAction, PopupState} from '../const.js';
+import {UpdateType, UserAction, PopupState, ButtonType} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -26,12 +26,12 @@ export default class Film {
     this._bodyElement = document.body;
 
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-    this._handleShowFilmPopupClick = this._handleShowFilmPopupClick.bind(this);
-    this._handleClosePopupClick = this._handleClosePopupClick.bind(this);
-    this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
-    this._handleWatchedClick = this._handleWatchedClick.bind(this);
-    this._handleFavoritesClick = this._handleFavoritesClick.bind(this);
-    this._handleCommentDeleteClick = this._handleCommentDeleteClick.bind(this);
+    this._showFilmPopupClickHandler = this._showFilmPopupClickHandler.bind(this);
+    this._closePopupClickHandler = this._closePopupClickHandler.bind(this);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
+    this._commentDeleteClickHandler = this._commentDeleteClickHandler.bind(this);
     this._commentAddHandler = this._commentAddHandler.bind(this);
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -46,10 +46,10 @@ export default class Film {
 
     this._filmComponent = new FilmCardView(this._film);
 
-    this._filmComponent.setShowPopupHandler(this._handleShowFilmPopupClick);
-    this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-    this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
-    this._filmComponent.setFavoritesClickHandler(this._handleFavoritesClick);
+    this._filmComponent.setShowPopupHandler(this._showFilmPopupClickHandler);
+    this._filmComponent.setWatchlistClickHandler(this._watchlistClickHandler);
+    this._filmComponent.setWatchedClickHandler(this._watchedClickHandler);
+    this._filmComponent.setFavoritesClickHandler(this._favoritesClickHandler);
 
     if (prevFilmComponent === null) {
       return render(this._filmsContainer, this._filmComponent, RenderPosition.BEFOREEND);
@@ -106,15 +106,16 @@ export default class Film {
     this._changeMode();
     this._mode = Mode.POPUP;
     this._comments = comments;
+    const status = isOnline();
 
     const prevPopupComponent = this._popupComponent;
-    this._popupComponent = new FilmPopupView(this._film, this._comments);
+    this._popupComponent = new FilmPopupView(this._film, this._comments, status);
 
-    this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-    this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
-    this._popupComponent.setFavoritesClickHandler(this._handleFavoritesClick);
-    this._popupComponent.setClosePopupClickHandler(this._handleClosePopupClick);
-    this._popupComponent.setCommentDeleteHandler(this._handleCommentDeleteClick);
+    this._popupComponent.setWatchlistClickHandler(this._watchlistClickHandler);
+    this._popupComponent.setWatchedClickHandler(this._watchedClickHandler);
+    this._popupComponent.setFavoritesClickHandler(this._favoritesClickHandler);
+    this._popupComponent.setClosePopupClickHandler(this._closePopupClickHandler);
+    this._popupComponent.setCommentDeleteHandler(this._commentDeleteClickHandler);
 
     this._bodyElement.classList.add('hide-overflow');
 
@@ -143,7 +144,7 @@ export default class Film {
     this._mode = Mode.DEFAULT;
   }
 
-  _handleShowFilmPopupClick() {
+  _showFilmPopupClickHandler() {
     this._api.getComments(this._film.id)
       .then((comments) => {
         this._commentsModel.setComments(comments);
@@ -156,38 +157,52 @@ export default class Film {
   }
 
   _escKeyDownHandler(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (evt.key === ButtonType.ESCAPE) {
       evt.preventDefault();
       this._closePopup();
     }
   }
 
-  _handleClosePopupClick() {
+  _closePopupClickHandler() {
     this._closePopup();
   }
 
   _updateFilm(details) {
     const updatedFilm = Object.assign({}, this._film, {userDetails: details});
-    this._changeData(this._mode === Mode.DEFAULT ? UpdateType.MINOR : this._mode === Mode.POPUP ? UpdateType.PATCH : '', updatedFilm);
+
+    let updateType = UpdateType.MINOR;
+
+    if (this._mode === Mode.POPUP) {
+      updateType = UpdateType.PATCH;
+    }
+
+    this._changeData(updateType, updatedFilm);
   }
 
-  _handleWatchlistClick() {
+  _watchlistClickHandler() {
     const updatedUserDetails = Object.assign({}, this._film.userDetails, {watchlist: !this._film.userDetails.watchlist});
     this._updateFilm(updatedUserDetails);
   }
 
-  _handleWatchedClick() {
-    const updatedUserDetails = Object.assign({}, this._film.userDetails, {alreadyWatched: !this._film.userDetails.alreadyWatched});
+  _watchedClickHandler() {
+    const updatedUserDetails = Object.assign(
+      {},
+      this._film.userDetails,
+      {
+        alreadyWatched: !this._film.userDetails.alreadyWatched,
+        watchingDate: this._film.userDetails.alreadyWatched ? null : new Date(),
+      },
+    );
     this._updateFilm(updatedUserDetails);
   }
 
-  _handleFavoritesClick() {
+  _favoritesClickHandler() {
     const updatedUserDetails = Object.assign({}, this._film.userDetails, {favorite: !this._film.userDetails.favorite});
     this._updateFilm(updatedUserDetails);
   }
 
   _commentAddHandler(evt) {
-    if ((evt.ctrlKey || evt.metaKey) && evt.code === 'Enter') {
+    if ((evt.ctrlKey || evt.metaKey) && evt.key === ButtonType.ENTER) {
       if (!isOnline()) {
         toast('You can\'t send comment offline');
         return;
@@ -206,7 +221,7 @@ export default class Film {
     }
   }
 
-  _handleCommentDeleteClick(id) {
+  _commentDeleteClickHandler(id) {
     if (!isOnline()) {
       toast('You can\'t delete comment offline');
       return;

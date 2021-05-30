@@ -2,14 +2,15 @@ import dayjs from 'dayjs';
 import {getRuntime} from '../utils/film.js';
 import AbstractView from './abstract.js';
 
+const DESCRIPTION_LENGTH = 140;
+
 const createFilmCardTemplate = (filmCard) => {
-  const DESCRIPTION_LENGTH = 140;
 
   const {title, totalRating, release, description, genres, runtime, poster} = filmCard.filmInfo;
   const {watchlist, alreadyWatched, favorite} = filmCard.userDetails;
 
   const cutDescription = (description) => {
-    return description.split('').slice(0, 140).join('') + '...';
+    return description.split('').slice(0, DESCRIPTION_LENGTH).join('') + '...';
   };
 
   const setActiveClass = (control) => {

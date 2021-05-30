@@ -1,3 +1,4 @@
+import {MUNUTES_IN_HOUR_COUNT} from '../const.js';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -6,8 +7,8 @@ export const sortByDate = (filmA, filmB) => dayjs(filmB.filmInfo.release.date).d
 export const sortByRating = (filmA, filmB) => filmB.filmInfo.totalRating - filmA.filmInfo.totalRating;
 
 export const getRuntime = (duration) => {
-  const hours = Math.trunc(duration/60);
-  const minutes = duration % 60;
+  const hours = Math.trunc(duration / MUNUTES_IN_HOUR_COUNT);
+  const minutes = duration % MUNUTES_IN_HOUR_COUNT;
   return `${hours}h ${minutes}m`;
 };
 

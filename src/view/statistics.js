@@ -4,9 +4,30 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {getUserRank, getTotalDuration, filterByDate, getGenresStatistics, getTopGenre} from '../utils/statistics.js';
 import {StatisticsFilter} from '../const.js';
 
-const renderStatisticsChart = (films, statisticsCtx) => {
-  const BAR_HEIGHT = 50;
+const BAR_HEIGHT = 50;
 
+const Colors = {
+  DATA_BACKGROUND_COLOR: '#ffe800',
+  DATA_HOVER_BACKGROUND_COLOR: '#ffe800',
+  OPTIONS_COLOR: '#ffffff',
+  SCALES_FONT_COLOR: '#ffffff',
+};
+
+const Positions = {
+  DATA_ANCHOR: 'start',
+  OPTIONS_ANCHOR: 'start',
+  OPTIONS_ALIGN: 'start',
+};
+
+const Sizes = {
+  OPTIONS_FONT_SIZE: 20,
+  OPTIONS_OFFSET: 40,
+  SCALES_PADDING: 100,
+  SCALES_FONT_SIZE: 20,
+  SCALES_BAR_THICKNESS: 24,
+};
+
+const renderStatisticsChart = (films, statisticsCtx) => {
   const genresNames = [];
   const genresCounts = [];
 
@@ -27,9 +48,9 @@ const renderStatisticsChart = (films, statisticsCtx) => {
       labels: genresNames,
       datasets: [{
         data: genresCounts,
-        backgroundColor: '#ffe800',
-        hoverBackgroundColor: '#ffe800',
-        anchor: 'start',
+        backgroundColor: Colors.DATA_BACKGROUND_COLOR,
+        hoverBackgroundColor: Colors.DATA_HOVER_BACKGROUND_COLOR,
+        anchor: Positions.DATA_ANCHOR,
       }],
     },
     options: {
@@ -38,24 +59,24 @@ const renderStatisticsChart = (films, statisticsCtx) => {
           font: {
             size: 20,
           },
-          color: '#ffffff',
-          anchor: 'start',
-          align: 'start',
-          offset: 40,
+          color: Colors.OPTIONS_COLOR,
+          anchor: Positions.OPTIONS_ANCHOR,
+          align: Positions.OPTIONS_ALIGN,
+          offset: Sizes.OPTIONS_OFFSET,
         },
       },
       scales: {
         yAxes: [{
           ticks: {
-            fontColor: '#ffffff',
-            padding: 100,
-            fontSize: 20,
+            fontColor: Colors.SCALES_FONT_COLOR,
+            padding: Sizes.SCALES_PADDING,
+            fontSize: Sizes.SCALES_FONT_SIZE,
           },
           gridLines: {
             display: false,
             drawBorder: false,
           },
-          barThickness: 24,
+          barThickness: Sizes.SCALES_BAR_THICKNESS,
         }],
         xAxes: [{
           ticks: {

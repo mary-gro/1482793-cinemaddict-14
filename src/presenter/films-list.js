@@ -15,6 +15,11 @@ import {SortType, UpdateType} from '../const.js';
 const SHOWED_FILMS_COUNT = 5;
 const FILMS_COUNT_EXTRA = 2;
 
+const ContainerType = {
+  TOP_RATED: 'top-rated',
+  MOST_COMMENTED: 'most-commented',
+};
+
 export default class FilmsList {
   constructor(filmsContainer, filmsModel, filterModel, api) {
     this._filmsModel = filmsModel;
@@ -41,11 +46,12 @@ export default class FilmsList {
     this._filmsListEmptyComponent = new FilmsListEmptyView();
     this._loadingComponent = new LoadingView();
 
-    this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._showMoreButtonClickHandler = this._showMoreButtonClickHandler.bind(this);
+    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
-    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init() {
@@ -81,7 +87,7 @@ export default class FilmsList {
     return filteredFilms;
   }
 
-  _handleSortTypeChange(sortType) {
+  _sortTypeChangeHandler(sortType) {
     if (this._currentSortType === sortType) {
       return;
     }
@@ -97,7 +103,7 @@ export default class FilmsList {
     }
 
     this._filmsSortingComponent = new FilmsSortingView(this._currentSortType);
-    this._filmsSortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    this._filmsSortingComponent.setSortTypeChangeHandler(this._sortTypeChangeHandler);
 
     render(this._filmsContainer, this._filmsSortingComponent, RenderPosition.BEFOREEND);
   }
@@ -107,10 +113,10 @@ export default class FilmsList {
     filmPresenter.init(film);
 
     switch (container.id) {
-      case 'top-rated':
+      case ContainerType.TOP_RATED:
         this._filmPresenters.topRatedFilmPresenter[film.id] = filmPresenter;
         break;
-      case 'most-commented':
+      case ContainerType.MOST_COMMENTED:
         this._filmPresenters.mostCommentedFilmPresenter[film.id] = filmPresenter;
         break;
       default:
@@ -127,12 +133,13 @@ export default class FilmsList {
     render(this._filmsSectionComponent, this._filmsListEmptyComponent, RenderPosition.BEFOREEND);
   }
 
-  _handleShowMoreButtonClick() {
-    const filmsCount = this._getFilms().length;
+  _showMoreButtonClickHandler() {
+    const films = this._getFilms();
+    const filmsCount = films.length;
     const newRenderedFilmsCount = Math.min(filmsCount, this._renderedFilmsCount + SHOWED_FILMS_COUNT);
-    const films = this._getFilms().slice(this._renderedFilmsCount, newRenderedFilmsCount);
+    const newRenderedFilms = films.slice(this._renderedFilmsCount, newRenderedFilmsCount);
 
-    this._renderFilms(this._filmsListContainer, films);
+    this._renderFilms(this._filmsListContainer, newRenderedFilms);
     this._renderedFilmsCount = newRenderedFilmsCount;
     if (this._renderedFilmsCount >= filmsCount) {
       remove(this._showMoreButtonComponent);
@@ -188,13 +195,13 @@ export default class FilmsList {
 
   _renderShowMoreButton() {
     this._showMoreButtonComponent = new ShowMoreButtonView();
-    this._showMoreButtonComponent.setShowMoreClickHandler(this._handleShowMoreButtonClick);
+    this._showMoreButtonComponent.setShowMoreClickHandler(this._showMoreButtonClickHandler);
 
     render(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
   }
 
   _renderMostCommentedList() {
-    const mostCommentedFilms = this._getFilms()
+    const mostCommentedFilms = this._filmsModel.getFilms()
       .slice()
       .sort((a, b) => b.comments.length - a.comments.length)
       .slice(0, FILMS_COUNT_EXTRA);
@@ -208,7 +215,7 @@ export default class FilmsList {
   }
 
   _renderTopRatedList() {
-    const topRatedFilms = this._getFilms()
+    const topRatedFilms = this._filmsModel.getFilms()
       .slice()
       .sort(sortByRating)
       .slice(0, FILMS_COUNT_EXTRA);
@@ -265,6 +272,8 @@ export default class FilmsList {
 
     if (filmsCount === 0) {
       this._renderEmptyList();
+      this._renderMostCommentedList();
+      this._renderTopRatedList();
       return;
     }
 

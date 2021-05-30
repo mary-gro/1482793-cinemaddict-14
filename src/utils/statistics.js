@@ -1,4 +1,4 @@
-import {RankScore, RankType} from '../const.js';
+import {RankScore, RankType, MUNUTES_IN_HOUR_COUNT} from '../const.js';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 
@@ -29,8 +29,8 @@ export const getTotalDuration = (films) => {
     return duration + film.filmInfo.runtime;
   }, 0);
   return {
-    HOURS: Math.floor(totalDuration / 60),
-    MINUTES: totalDuration % 60,
+    HOURS: Math.floor(totalDuration / MUNUTES_IN_HOUR_COUNT),
+    MINUTES: totalDuration % MUNUTES_IN_HOUR_COUNT,
   };
 };
 
@@ -40,11 +40,10 @@ export const getGenresStatistics = (films) => {
   films
     .reduce((acc, film) => acc.concat(film.filmInfo.genres), [])
     .forEach((genre) => {
-      if (genresStatistics[genre]) {
-        genresStatistics[genre]++;
-        return;
+      if (!genresStatistics[genre]) {
+        genresStatistics[genre] = 0;
       }
-      genresStatistics[genre] = 1;
+      genresStatistics[genre]++;
     });
 
   return genresStatistics;

@@ -272,8 +272,8 @@ export default class FilmsList {
 
     if (filmsCount === 0) {
       this._renderEmptyList();
-      this._renderMostCommentedList();
       this._renderTopRatedList();
+      this._renderMostCommentedList();
       return;
     }
 

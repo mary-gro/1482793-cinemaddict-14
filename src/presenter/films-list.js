@@ -285,7 +285,7 @@ export default class FilmsList {
     if (filmsCount > this._renderedFilmsCount) {
       this._renderShowMoreButton();
     }
-    this._renderMostCommentedList();
     this._renderTopRatedList();
+    this._renderMostCommentedList();
   }
 }
